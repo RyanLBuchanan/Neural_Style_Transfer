@@ -24,13 +24,13 @@ from scipy.optimize import fmin_l_bfgs_b
 
 def VGG16_AvgPool(shape):
     # Account for features across the entire image
-    # get rid of maxpool which throws away info
+    # Get rid of maxpool which throws away info
     vgg = VGG16(input_shape=shape, weights='imagenet', include_top=False)
     
     new_model = Sequential()
     for layer in vgg.layer:
         if layer.__class__ == MaxPooling2D:
-            # replace it with average pooling
+            # Replace it with average pooling
             new_model.add(AveragePooling2D())
         else:
             new_model.add(layer)
@@ -38,9 +38,8 @@ def VGG16_AvgPool(shape):
     return new_model
 
 def VGG16_AvgPool_CutOff(shape, num_convs):
-    # there 13 convolutions in total 
-    # pick any of them as "output"
-    # of our content model
+    # There are 13 convolutions in total 
+    # Pick any of them as "output" of our content model
     
     if num_convs < 1 or num_convs > 13:
         print("num_convs must be in the range [1, 13]")
@@ -49,3 +48,41 @@ def VGG16_AvgPool_CutOff(shape, num_convs):
     model = VGG16_AvgPool(shape)
     new_model = Sequential()
     n = 0     
+    for layer in model.layers:
+        if layer.__class__ == Conv2D:
+            n += 1
+        new_model.add(layer)
+        if n >= num_convs:
+            break
+        
+    return new_model
+
+def unpreprocess(img):
+    img[..., 0] += 103.939
+    img[..., 1] += 116.779
+    img[..., 2] += 126.68
+    img = img[..., ::-1]
+    return img
+
+
+def scale_img(x):
+    x = x - x.min()
+    x = x / x.max()
+    return x
+
+if __name__ == '__main__':
+    
+    # Open an image
+
+
+
+
+
+
+
+
+
+
+
+
+
