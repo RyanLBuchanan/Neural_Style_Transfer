@@ -22,3 +22,30 @@ from scipy.optimize import fmin_l_bfgs_b
 
 
 
+def VGG16_AvgPool(shape):
+    # Account for features across the entire image
+    # get rid of maxpool which throws away info
+    vgg = VGG16(input_shape=shape, weights='imagenet', include_top=False)
+    
+    new_model = Sequential()
+    for layer in vgg.layer:
+        if layer.__class__ == MaxPooling2D:
+            # replace it with average pooling
+            new_model.add(AveragePooling2D())
+        else:
+            new_model.add(layer)
+    
+    return new_model
+
+def VGG16_AvgPool_CutOff(shape, num_convs):
+    # there 13 convolutions in total 
+    # pick any of them as "output"
+    # of our content model
+    
+    if num_convs < 1 or num_convs > 13:
+        print("num_convs must be in the range [1, 13]")
+        return None
+    
+    model = VGG16_AvgPool(shape)
+    new_model = Sequential()
+    n = 0     
