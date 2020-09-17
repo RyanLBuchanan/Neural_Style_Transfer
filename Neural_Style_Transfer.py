@@ -135,7 +135,7 @@ if __name__ == '__main__':
     t0 = dateTime.now()
     losses = []
     x = np.random.randn(np.prod(batch_shape))
-    for i range(10):
+    for i in range(10):
         x, l, _ = fmin_l_bfgs_b(
             func=get_loss_and_grads_wrapper,
             x0=x,
