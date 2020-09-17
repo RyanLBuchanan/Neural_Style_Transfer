@@ -73,7 +73,10 @@ def scale_img(x):
 if __name__ == '__main__':
     
     # Open an image
+    path = 'images/curi_kit.jpg'
+    img = image.load_img(path)
 
+    # Convert image to array and preprocess for vgg    
 
 
 
